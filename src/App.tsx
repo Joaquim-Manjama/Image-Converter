@@ -5,7 +5,7 @@ import { useState } from "react";
 function App() {
 
   const [selectedOutputFormat, setSelectedOutputFormat] = useState("");
-  const [fileUploaded, setFileUploaded] = useState(false);
+  const [file, setFile] = useState<File | undefined>();
 
   const supportedImageTypes: string[][] = [
     ["BMP", "Uncompressed"],
@@ -18,6 +18,14 @@ function App() {
 
   const handleFormatChoice = (imageType: string): void => {
     setSelectedOutputFormat(imageType);
+  }
+
+  const handleOnChange = (e: React.FormEvent<HTMLInputElement>) => {
+    const target = e.target as HTMLInputElement & {
+      files: FileList;
+    } 
+
+    setFile(target.files[0]);
   }
 
   return (
@@ -41,14 +49,24 @@ function App() {
         {/*Conversion Box*/}
         <div className="p-10 bg-[#111111] border-2 border-gray-800 w-[90%] rounded-2xl mt-[40px] border flex flex-col items-center gap-[10px]">
 
-          {/*Drag and Drop*/}
-          <div className="pt-10 pb-10 border-2 border-gray-600 border-dotted w-[90%] rounded-2xl flex flex-col justify-center items-center gap-[10px] cursor-pointer transition-all duration-300 hover:border-[#3dd6c6] hover:bg-[#151515]">
-            <div className="rounded-lg bg-[#222233] w-[65px] h-[65px] flex items-center justify-center">
-              <span className="material-symbols-outlined text-gray-400 scale-180">upload</span>
+          
+          {file ?
+            <div className="flex flex-col items-center justify-center mb-[-50px] w-[60%] h-[300px] relative select-none">
+              <span onClick={() => setFile(undefined)} className="material-symbols-outlined text-white text-2xl absolute right-[20px] top-[10px] scale-150 hover:text-red-400 cursor-pointer">close</span>
+              <span className="material-symbols-outlined text-[#666666] scale-500">image</span>
+              <h1 className="font-bold text-white text-lg mt-[50px]">{file.name}</h1>
             </div>
-            <h2 className="text-white text-lg font-bold">Drag & drop your image</h2>
-            <p className="text-gray-400 text-m">or <span className="text-[#3dd6c6] font-bold">browse</span> to choose a file</p>
-          </div>
+            :
+            /*Drag and Drop*/
+            <div className="pt-10 pb-10 border-2 border-gray-600 border-dotted w-[90%] rounded-2xl flex flex-col justify-center items-center gap-[10px] cursor-pointer transition-all duration-300 hover:border-[#3dd6c6] hover:bg-[#151515] relative">
+              <input type="file" name="image" onChange={(e) => handleOnChange(e)} className="text-transparent w-[100%] h-[100%] cursor-pointer absolute"/>
+              <div className="rounded-lg bg-[#222233] w-[65px] h-[65px] flex items-center justify-center">
+                <span className="material-symbols-outlined text-gray-400 scale-180">upload</span>
+              </div>
+              <h2 className="text-white text-lg font-bold">Drag & drop your image</h2>
+              <p className="text-gray-400 text-m">or <span className="text-[#3dd6c6] font-bold">browse</span> to choose a file</p>
+            </div>
+          }
 
           {/*Choose Output Format*/}
           <span className="w-[100%] flex flex-row justify-between mt-[20px] mb-[20px]"><p className="text-m text-white font-bold">Output Format</p> <p className="text-sm text-gray-400">Select your target format</p></span>
@@ -60,9 +78,8 @@ function App() {
             )))}
           </div>
 
-
           {/*Conversion Button*/}
-          <button className={`flex flex-row text-lg ${fileUploaded && selectedOutputFormat != "" ? "bg-[#3dd6c6] cursor-pointers" : "bg-[#1e6b63] cursor-not-allowed"} p-[15px] rounded-xl mt-[30px]`}>Convert Now <span className="material-symbols-outlined ml-[5px] mt-[3px] scale-80"> arrow_forward </span></button>
+          <button className={`flex flex-row text-lg ${file && selectedOutputFormat != "" ? "bg-[#3dd6c6] cursor-pointers" : "bg-[#1e6b63] cursor-not-allowed"} p-[15px] rounded-xl mt-[30px]`}>Convert Now <span className="material-symbols-outlined ml-[5px] mt-[3px] scale-80"> arrow_forward </span></button>
 
         </div>
         <p className="text-gray-400 text-sm">Your files are processed locally and never uploaded to any server</p>
