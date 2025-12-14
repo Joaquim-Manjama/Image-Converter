@@ -8,13 +8,13 @@ function App() {
   const [selectedOutputFormat, setSelectedOutputFormat] = useState("");
   const [file, setFile] = useState<File | undefined>();
   const [imageFilePreview, setImageFilePreview] = useState<string | ArrayBuffer | null>(null);
+  const [loading, setLoading] = useState(false);
 
   const supportedImageTypes: string[][] = [
     ["BMP", "Uncompressed"],
     ["GIF", "Animation Support"],
     ["JPG", "Small file size"],
     ["PNG", "Lossless, transparent"],
-    ["WBMP", "Wireless Bitmap"],
   ];
 
   const handleFormatChoice = (imageType: string): void => {
@@ -37,11 +37,15 @@ function App() {
   }
 
   const handleConversion = async (): Promise<void> => {
+    
     if (!file || typeof imageFilePreview !== "string" || selectedOutputFormat === "") return;
     
+    setLoading(true);
+  
     const blob = await convertImage(file, selectedOutputFormat.toLowerCase());
 
     downloadBlob(await blob, `converted-image.${selectedOutputFormat.toLowerCase()}`);
+    setLoading(false);
   }
 
   
@@ -71,7 +75,7 @@ function App() {
           {file ?
 
             <div className="flex flex-col items-center justify-center mb-[-10px] w-[90%] h-[300px] relative select-none">
-              <span onClick={() => setFile(undefined)} className="material-symbols-outlined text-white text-2xl absolute right-[20px] top-[10px] scale-150 hover:text-red-400 cursor-pointer">close</span>
+              {!loading && <span onClick={() => setFile(undefined)} className="material-symbols-outlined text-white text-2xl absolute right-[20px] top-[10px] scale-150 hover:text-red-400 cursor-pointer">close</span>}
               <img src={typeof imageFilePreview === "string"? imageFilePreview : ""} alt={file.name} className="material-symbols-outlined text-[#666666] w-[180px] h-[180px] object-cover"/>
               <h1 className="font-bold text-white text-lg mt-[50px]">{file.name}</h1>
             </div>
@@ -98,10 +102,15 @@ function App() {
           </div>
 
           {/*Conversion Button*/}
-          <button onClick={() => handleConversion()} className={`flex flex-row text-lg ${file && selectedOutputFormat != "" ? `bg-[#3dd6c6] cursor-pointer` : "bg-[#1e6b63] cursor-not-allowed"} p-[15px] rounded-xl mt-[30px] active:bg-[#1e6b63]`}>Convert Now <span className="material-symbols-outlined ml-[5px] mt-[3px] scale-80"> arrow_forward </span></button>
+          {
+            loading ?
+            <button disabled className={`flex flex-row text-lg bg-gray-700 cursor-wait p-[15px] rounded-xl mt-[30px]`}><span className="mr-[10px]"></span> Converting Image File... </button>
+            :
+            <button onClick={() => handleConversion()} className={`flex flex-row text-lg ${file && selectedOutputFormat != "" ? `bg-[#3dd6c6] cursor-pointer` : "bg-[#1e6b63] cursor-not-allowed"} p-[15px] rounded-xl mt-[30px] active:bg-[#1e6b63]`}>Convert Now <span className="material-symbols-outlined ml-[5px] mt-[3px] scale-80"> arrow_forward </span></button>
+          }
 
         </div>
-        <p className="text-gray-400 text-sm">Your files are processed locally and never uploaded to any server</p>
+        <p className="text-gray-400 text-sm mb-[20px]">Convert your image files in no time</p>
       </div>
     </div>
   )
