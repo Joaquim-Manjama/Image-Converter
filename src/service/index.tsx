@@ -1,3 +1,17 @@
+const BASE_URL = 'http://localhost:8080';
+
+export const getSupportedFormats = async() => {
+    const response = await fetch(`${BASE_URL}/supported-types`);
+    const data = await response.json();
+    return data;
+}
+
+export const getTypeDescriptions = async() => {
+    const response = await fetch(`${BASE_URL}/type-descriptions`);
+    const data = await response.json();
+    return data;
+}
+
 export const convertImage = async(imageFile: File, outputFormat: string) => {
 
     const formData = new FormData();
@@ -5,7 +19,7 @@ export const convertImage = async(imageFile: File, outputFormat: string) => {
     formData.append('image', imageFile);
     formData.append('format', outputFormat);
 
-    const response = await fetch('http://localhost:8080/convert-image', {
+    const response = await fetch(`${BASE_URL}/convert-image`, {
         method: 'POST',
         body: formData
     });
@@ -29,4 +43,3 @@ export const downloadBlob = (blob: Blob, filename: string) => {
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
 }
-

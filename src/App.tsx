@@ -1,7 +1,8 @@
 import Benefit from "./components/Benefit"
 import Format from "./components/Format";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { convertImage, downloadBlob } from "./service";
+import { getImageFormatInformation } from "./utils/imageTypes";
 
 function App() {
 
@@ -9,13 +10,18 @@ function App() {
   const [file, setFile] = useState<File | undefined>();
   const [imageFilePreview, setImageFilePreview] = useState<string | ArrayBuffer | null>(null);
   const [loading, setLoading] = useState(false);
+  const [supportedImageTypes, setSupportedImageTypes] = useState<string[][]>([[]]);
+  
+  useEffect(() => {
 
-  const supportedImageTypes: string[][] = [
-    ["BMP", "Uncompressed"],
-    ["GIF", "Animation Support"],
-    ["JPG", "Small file size"],
-    ["PNG", "Lossless, transparent"],
-  ];
+    const fetchSupportedFormats = async () => {
+      const data = await getImageFormatInformation();
+      setSupportedImageTypes(data);
+    }
+
+    fetchSupportedFormats();
+
+  }, []);
 
   const handleFormatChoice = (imageType: string): void => {
     setSelectedOutputFormat(imageType);
