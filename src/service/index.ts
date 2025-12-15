@@ -1,13 +1,24 @@
-const BASE_URL = 'http://localhost:8080';
+const BASE_URL = "http://localhost:8080"; // API_BASE_URL
 
 export const getSupportedFormats = async() => {
-    const response = await fetch(`${BASE_URL}/supported-types`);
-    const data = await response.json();
-    return data;
+
+    try  {
+        const response = await fetch(`${BASE_URL}/supported-types`);
+        const data = await response.json();
+        return data;
+    } 
+    
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    catch (error) {
+        alert("Failed to comunicate with the server. Please try again later. ");
+        return [];
+    }
+
 }
 
 export const getTypeDescriptions = async() => {
     const response = await fetch(`${BASE_URL}/type-descriptions`);
+
     const data = await response.json();
     return data;
 }
@@ -24,8 +35,13 @@ export const convertImage = async(imageFile: File, outputFormat: string) => {
         body: formData
     });
 
+
     if (!response.ok) {
-        throw new Error('Image conversion failed');
+        if (response.status === 500) {
+            alert(`Error occurred during conversion. Please try again later. "Cannot convert to the specified format (${outputFormat})."`);
+        }
+
+        return null;
     }
 
     return await response.blob();
