@@ -1,4 +1,8 @@
-const BASE_URL = "https://image-converter-backend-latest.onrender.com/";
+import dotenv from 'dotenv';
+
+dotenv.config();
+
+const BASE_URL = process.env.BASE_URL;
 
 export const getSupportedFormats = async(): Promise<string[]> => {
     try  {
