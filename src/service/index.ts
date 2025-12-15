@@ -1,4 +1,4 @@
-const BASE_URL = "https://image-converter-backend-latest.onrender.com/";
+const BASE_URL = "https://image-converter-backend-latest.onrender.com";
 
 export const getSupportedFormats = async(): Promise<string[]> => {
     try  {
