@@ -1,7 +1,6 @@
-const BASE_URL = "http://localhost:8080"; // API_BASE_URL
+const BASE_URL = "https://image-converter-backend-latest.onrender.com/";
 
-export const getSupportedFormats = async() => {
-
+export const getSupportedFormats = async(): Promise<string[]> => {
     try  {
         const response = await fetch(`${BASE_URL}/supported-types`);
         const data = await response.json();
@@ -16,14 +15,14 @@ export const getSupportedFormats = async() => {
 
 }
 
-export const getTypeDescriptions = async() => {
+export const getTypeDescriptions = async(): Promise<string[]> => {
     const response = await fetch(`${BASE_URL}/type-descriptions`);
 
     const data = await response.json();
     return data;
 }
 
-export const convertImage = async(imageFile: File, outputFormat: string) => {
+export const convertImage = async(imageFile: File, outputFormat: string): Promise<Blob | null> => {
 
     const formData = new FormData();
 
@@ -47,7 +46,7 @@ export const convertImage = async(imageFile: File, outputFormat: string) => {
     return await response.blob();
 }
 
-export const downloadBlob = (blob: Blob, filename: string) => {
+export const downloadBlob = (blob: Blob, filename: string):void => {
   const url = URL.createObjectURL(blob);
 
   const a = document.createElement("a");
