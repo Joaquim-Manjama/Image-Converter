@@ -114,6 +114,10 @@ function App() {
             )))}
           </div>
 
+          {/*Server Asleep*/}
+
+          {supportedImageTypes.length === 1 && <p className="text-red-500">Server is waking up... {"(can take up to 5 minutes.)"}</p>}
+
           {/*Conversion Button*/}
           {
             loading ?

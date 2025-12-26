@@ -9,7 +9,6 @@ export const getSupportedFormats = async(): Promise<string[]> => {
     
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     catch (error) {
-        alert("Failed to comunicate with the server. Please try again later. ");
         return [];
     }
 
